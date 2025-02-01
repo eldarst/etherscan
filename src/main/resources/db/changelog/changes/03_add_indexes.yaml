@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: eldarskiy
+      changes:
+        - createIndex:
+            indexName: idx_processed_blocks_block_number
+            tableName: processed_blocks
+            columns:
+              - column:
+                  name: block_number
+        - createIndex:
+            indexName: idx_transactions_block_number
+            tableName: transactions
+            indexType: hash
+            columns:
+              - column:
+                  name: block_number

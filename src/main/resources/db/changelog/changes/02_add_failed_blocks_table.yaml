@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: eldarskiy
+      changes:
+        - createTable:
+            tableName: failed_blocks
+            columns:
+              - column:
+                  name: block_number
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true

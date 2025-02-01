@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jooq:
+    sql-dialect: POSTGRES
+  liquibase:
+    enabled: false
+#    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+etherscan:
+  api:
+    url: https://api.etherscan.io/api
+    key: ${ETHERSCAN_API_KEY}

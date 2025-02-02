@@ -73,6 +73,7 @@ class EtherscanServiceImpl(
                 }
             }
 
+        logger.info { "Block $blockNumber successfully read from API" }
         val blockResponse: BlockResponse<BlockResult> = response.body()
         return blockResponse
     }

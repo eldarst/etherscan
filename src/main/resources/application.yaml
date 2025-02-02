@@ -17,3 +17,4 @@ etherscan:
 
 scheduler:
   shouldRunLatestFirst: ${SHOULD_PROCESS_LATEST_BLOCKS}
+  parallelApiCalls: ${PARALLEL_API_CALLS_COUNT}

@@ -52,7 +52,7 @@ services:
       POSTGRES_PASSWORD: "postgres_password"
       ETHERSCAN_API_KEY: "YOUR_API_KEY"
       SHOULD_PROCESS_LATEST_BLOCKS: false
-
+      PARALLEL_API_CALLS_COUNT: 3
     depends_on:
       - postgres
 

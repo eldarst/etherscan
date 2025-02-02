@@ -2,6 +2,9 @@ package com.etherscan.app.scheduler
 
 import com.etherscan.app.service.BlockProcessingService
 import com.etherscan.app.service.EtherscanApiService
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -16,6 +19,7 @@ class BlockProcessorScheduler(
     private val etherscanService: EtherscanApiService,
     private val blockProcessService: BlockProcessingService,
     @Value("\${scheduler.shouldRunLatestFirst}") private val shouldRunLatestFirst: Boolean,
+    @Value("\${scheduler.parallelApiCalls}") private val parallelApiCalls: Long,
 ) {
     private val mutex = Mutex()
 
@@ -53,13 +57,22 @@ class BlockProcessorScheduler(
             } else {
                 (lastProcessedBlock + 1)..latestBlock
             }
-        for (blockNumber in blocks) {
-            val blockTransactions = etherscanService.getBlockTransactions(blockNumber)
-            if (blockTransactions == null) {
-                blockProcessService.addFailedBlock(blockNumber)
-                continue
+        coroutineScope {
+            for (startingBlock in blocks.step(parallelApiCalls)) {
+                (0 until parallelApiCalls).map { parallelId ->
+                    async {
+                        val currentBlockId = startingBlock + parallelId
+                        val blockTransactions = etherscanService.getBlockTransactions(currentBlockId)
+                        if (blockTransactions == null) {
+                            blockProcessService.addFailedBlock(currentBlockId)
+                            logger.warn { "Block $currentBlockId wasn't read from API. Will be processed later" }
+                            return@async
+                        }
+                        blockProcessService.processBlockTransactions(blockTransactions, currentBlockId)
+                        logger.info { "Block $currentBlockId successfully processed and saved to system" }
+                    }
+                }.awaitAll()
             }
-            blockProcessService.processBlockTransactions(blockTransactions, blockNumber)
         }
     }
 

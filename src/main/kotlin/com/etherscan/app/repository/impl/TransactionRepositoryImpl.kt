@@ -3,7 +3,7 @@ package com.etherscan.app.repository.impl
 import com.etherscan.app.extensions.notNull
 import com.etherscan.app.model.TransactionEntity
 import com.etherscan.app.repository.TransactionRepository
-import com.example.generated.jooq.tables.Transactions.Companion.TRANSACTIONS
+import com.example.generated.jooq.tables.references.TRANSACTIONS
 import org.jooq.Configuration
 import org.jooq.Records
 import org.springframework.stereotype.Repository
@@ -24,7 +24,7 @@ class TransactionRepositoryImpl(private val configuration: Configuration) : Tran
                         TRANSACTIONS.TX_HASH,
                         TRANSACTIONS.FROM_ADDRESS,
                         TRANSACTIONS.TO_ADDRESS,
-                        TRANSACTIONS.VALUE,
+                        TRANSACTIONS.TRANSACTION_VALUE,
                     )
             for (transaction in ethereumTransactions) {
                 insertQuery =
@@ -50,7 +50,7 @@ class TransactionRepositoryImpl(private val configuration: Configuration) : Tran
             TRANSACTIONS.TX_HASH.notNull(),
             TRANSACTIONS.FROM_ADDRESS.notNull(),
             TRANSACTIONS.TO_ADDRESS.notNull(),
-            TRANSACTIONS.VALUE.notNull(),
+            TRANSACTIONS.TRANSACTION_VALUE.notNull(),
         )
             .from(TRANSACTIONS)
             .where(TRANSACTIONS.BLOCK_NUMBER.`in`(blockNumbers))

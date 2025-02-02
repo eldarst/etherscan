@@ -1,5 +1,6 @@
 package com.etherscan.app.service.impl
 
+import com.etherscan.app.exception.exception.NoRecordsFoundException
 import com.etherscan.app.model.BalanceChangeResultInfo
 import com.etherscan.app.repository.BlockProcessRepository
 import com.etherscan.app.repository.TransactionRepository
@@ -17,27 +18,32 @@ class StatsServiceImpl(
         val lastProcessedBlocks = blockProcessRepository.findNLastProcessedBlocks(100)
         if (lastProcessedBlocks.isEmpty()) {
             logger.warn { "Doesn't have any saved blocks in the system" }
-            error("Couldn't find any transactions")
+            throw NoRecordsFoundException("Couldn't find any processed blocks")
         }
         logger.info { "Calculating max balance change of blocks ${lastProcessedBlocks.last()}...${lastProcessedBlocks.first()}" }
         val lastProcessedTransactions = transactionRepository.getByBlockNumbers(lastProcessedBlocks)
+        if (lastProcessedTransactions.isEmpty()) {
+            logger.warn { "Doesn't have any saved blocks in the system" }
+            throw NoRecordsFoundException("Couldn't find any transactions")
+        }
+        logger.info { "There are ${lastProcessedTransactions.size} transaction in this blocks" }
 
         val balanceChanges = hashMapOf<String, BigDecimal>()
         for (transaction in lastProcessedTransactions) {
             balanceChanges.merge(
                 transaction.fromAddress,
-                BigDecimal.ZERO,
-            ) { oldValue, decreaseValue -> oldValue - decreaseValue }
+                -transaction.value,
+            ) { oldValue, decreaseValue -> oldValue + decreaseValue }
 
             if (transaction.toAddress != null) {
                 balanceChanges.merge(
                     transaction.toAddress,
-                    BigDecimal.ZERO,
+                    transaction.value,
                 ) { oldValue, increaseValue -> oldValue + increaseValue }
             }
         }
 
-        val (address, netChange) = balanceChanges.maxByOrNull { it.value.abs() } ?: error("Couldn't count max balance change address")
+        val (address, netChange) = balanceChanges.maxBy { it.value.abs() }
         return BalanceChangeResultInfo(address, netChange.toBigInteger())
     }
 

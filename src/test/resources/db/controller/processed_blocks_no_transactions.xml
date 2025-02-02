@@ -1,0 +1,7 @@
+<dataset>
+    <processed_blocks block_number="100"/>
+    <processed_blocks block_number="101"/>
+    <processed_blocks block_number="102"/>
+
+    <failed_blocks block_number="999"/>
+</dataset>

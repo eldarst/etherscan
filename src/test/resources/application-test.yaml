@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS "public";DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=true
+    driverClassName: org.h2.Driver
+  jooq:
+    sql-dialect: h2
+  liquibase:
+    enabled: true
+
+etherscan:
+  api:
+    url: https://api.etherscan.io/api
+    key: SOME_KEY
+
+scheduler:
+  shouldRunLatestFirst: true

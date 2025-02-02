@@ -1,0 +1,51 @@
+<dataset>
+    <transactions
+            id="1"
+            block_number="100"
+            tx_hash="0xabc"
+            from_address="0x111"
+            to_address="0x222"
+            transaction_value="123324234.0"
+    />
+
+    <transactions
+            id="2"
+            block_number="100"
+            tx_hash="0xab3"
+            from_address="0x111"
+            to_address="0x333"
+            transaction_value="231224234.0"
+    />
+
+    <transactions
+            id="3"
+            block_number="101"
+            tx_hash="0xdef"
+            from_address="0x333"
+            to_address="0x222"
+            transaction_value="6743423.0"
+    />
+
+    <transactions
+            id="4"
+            block_number="101"
+            tx_hash="0xde0"
+            from_address="0x333"
+            to_address="0x111"
+            transaction_value="3492242.0"
+    />
+
+    <transactions
+            id="5"
+            block_number="101"
+            tx_hash="0xde1"
+            from_address="0x111"
+            to_address="0x333"
+            transaction_value="355922.0"
+    />
+
+    <processed_blocks block_number="100"/>
+    <processed_blocks block_number="101"/>
+
+    <failed_blocks block_number="999"/>
+</dataset>

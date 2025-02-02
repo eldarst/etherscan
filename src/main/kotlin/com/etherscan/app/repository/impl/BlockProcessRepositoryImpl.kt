@@ -2,8 +2,8 @@ package com.etherscan.app.repository.impl
 
 import com.etherscan.app.extensions.notNull
 import com.etherscan.app.repository.BlockProcessRepository
-import com.example.generated.jooq.tables.FailedBlocks.Companion.FAILED_BLOCKS
-import com.example.generated.jooq.tables.ProcessedBlocks.Companion.PROCESSED_BLOCKS
+import com.example.generated.jooq.tables.references.FAILED_BLOCKS
+import com.example.generated.jooq.tables.references.PROCESSED_BLOCKS
 import org.jooq.Configuration
 import org.springframework.stereotype.Repository
 

@@ -66,6 +66,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.springtestdbunit:spring-test-dbunit:1.3.0")
+    testImplementation("org.dbunit:dbunit:3.0.0")
+    testImplementation("com.h2database:h2")
 }
 
 liquibase {

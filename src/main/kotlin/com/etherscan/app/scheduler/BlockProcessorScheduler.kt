@@ -1,7 +1,7 @@
 package com.etherscan.app.scheduler
 
-import com.etherscan.app.service.BlockProcessService
-import com.etherscan.app.service.EtherscanService
+import com.etherscan.app.service.BlockProcessingService
+import com.etherscan.app.service.EtherscanApiService
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class BlockProcessorScheduler(
-    private val etherscanService: EtherscanService,
-    private val blockProcessService: BlockProcessService,
+    private val etherscanService: EtherscanApiService,
+    private val blockProcessService: BlockProcessingService,
     @Value("\${scheduler.shouldRunLatestFirst}") private val shouldRunLatestFirst: Boolean,
 ) {
     private val mutex = Mutex()
@@ -40,19 +40,19 @@ class BlockProcessorScheduler(
         val lastProcessedBlock = blockProcessService.findLastProcessedBlock() ?: (START_BLOCK - 1)
         logger.info { "The last processed block: $lastProcessedBlock" }
 
-        val latestBlockHex = etherscanService.getLatestBlockNumber()
-        if (latestBlockHex == null) {
+        val latestBlock = etherscanService.getLatestBlockNumber()
+        if (latestBlock == null) {
             logger.warn { "Couldn't get the last block" }
             return
         }
-        val latestBlock = etherscanService.hexToLong(latestBlockHex.result)
         logger.info { "The latest block: $latestBlock" }
 
-        val blocks = if (shouldRunLatestFirst) {
-            latestBlock downTo (lastProcessedBlock + 1)
-        } else {
-            (lastProcessedBlock + 1)..latestBlock
-        }
+        val blocks =
+            if (shouldRunLatestFirst) {
+                latestBlock downTo (lastProcessedBlock + 1)
+            } else {
+                (lastProcessedBlock + 1)..latestBlock
+            }
         for (blockNumber in blocks) {
             val blockTransactions = etherscanService.getBlockTransactions(blockNumber)
             if (blockTransactions == null) {

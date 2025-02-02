@@ -1,8 +1,9 @@
-package com.etherscan.app.service
+package com.etherscan.app.service.impl
 
 import com.etherscan.app.model.TransactionEntity
 import com.etherscan.app.model.client.BlockResponse
 import com.etherscan.app.model.client.BlockResult
+import com.etherscan.app.service.EtherscanApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.timeout
@@ -17,33 +18,14 @@ import java.math.BigDecimal
 import java.math.BigInteger
 
 @Service
-class EtherscanService(
+class EtherscanServiceImpl(
     private val httpClient: HttpClient,
     @Value("\${etherscan.api.url}") private val apiUrl: String,
     @Value("\${etherscan.api.key}") private val apiKey: String,
-) {
-    suspend fun <T> runWithRetry(
-        requestInfo: String,
-        maxRetries: Int = 3,
-        delayBetweenRetriesMillis: Long = 1000,
-        block: suspend () -> T,
-    ): T? {
-        repeat(maxRetries) { attempt ->
-            try {
-                return block()
-            } catch (e: Exception) {
-                logger.warn { "Attempt ${attempt + 1} failed when making request: $requestInfo. Error: ${e.message}" }
-                if (attempt < maxRetries - 1) {
-                    delay(delayBetweenRetriesMillis)
-                }
-            }
-        }
-        return null
-    }
-
-    suspend fun getBlockTransactions(
+) : EtherscanApiService {
+    override suspend fun getBlockTransactions(
         blockNumber: Long,
-        longRunning: Boolean = false,
+        longRunning: Boolean,
     ): Collection<TransactionEntity>? {
         logger.info { "Processing a block: $blockNumber" }
         val blockResponse =
@@ -95,7 +77,7 @@ class EtherscanService(
         return blockResponse
     }
 
-    suspend fun getLatestBlockNumber(): BlockResponse<String>? =
+    override suspend fun getLatestBlockNumber(): Long? =
         try {
             val response: HttpResponse =
                 httpClient.get(apiUrl) {
@@ -105,13 +87,32 @@ class EtherscanService(
                 }
 
             val blockResponse: BlockResponse<String> = response.body()
-            blockResponse
+            hexToLong(blockResponse.result)
         } catch (e: Exception) {
             logger.warn { "Couldn't get latest block number. Error: ${e.message}" }
             null
         }
 
-    fun hexToLong(hex: String): Long = hex.removePrefix("0x").toLong(16)
+    private suspend fun <T> runWithRetry(
+        requestInfo: String,
+        maxRetries: Int = 3,
+        delayBetweenRetriesMillis: Long = 1000,
+        block: suspend () -> T,
+    ): T? {
+        repeat(maxRetries) { attempt ->
+            try {
+                return block()
+            } catch (e: Exception) {
+                logger.warn { "Attempt ${attempt + 1} failed when making request: $requestInfo. Error: ${e.message}" }
+                if (attempt < maxRetries - 1) {
+                    delay(delayBetweenRetriesMillis)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun hexToLong(hex: String): Long = hex.removePrefix("0x").toLong(16)
 
     private fun hexToBigDecimal(hex: String): BigDecimal = BigDecimal(BigInteger(hex.removePrefix("0x"), 16))
 

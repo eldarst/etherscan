@@ -1,7 +1,7 @@
 package com.etherscan.app.scheduler
 
-import com.etherscan.app.service.BlockProcessService
-import com.etherscan.app.service.EtherscanService
+import com.etherscan.app.service.BlockProcessingService
+import com.etherscan.app.service.EtherscanApiService
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class FailedBlockProcessorScheduler(
-    private val etherscanService: EtherscanService,
-    private val blockProcessService: BlockProcessService,
+    private val etherscanService: EtherscanApiService,
+    private val blockProcessService: BlockProcessingService,
 ) {
     private val mutex = Mutex()
 

@@ -1,18 +1,19 @@
-package com.etherscan.app.service
+package com.etherscan.app.service.impl
 
 import com.etherscan.app.model.TransactionEntity
 import com.etherscan.app.repository.BlockProcessRepository
 import com.etherscan.app.repository.TransactionRepository
+import com.etherscan.app.service.BlockProcessingService
 import org.jooq.Configuration
 import org.springframework.stereotype.Service
 
 @Service
-class BlockProcessService(
+class BlockProcessServiceImpl(
     private val transactionRepository: TransactionRepository,
     private val blockProcessRepository: BlockProcessRepository,
     private val jooqConfiguration: Configuration,
-) {
-    fun processBlockTransactions(
+) : BlockProcessingService {
+    override fun processBlockTransactions(
         blockTransactions: Collection<TransactionEntity>,
         blockNumber: Long,
     ) {
@@ -22,7 +23,7 @@ class BlockProcessService(
         }
     }
 
-    fun processFailedBlockTransactions(
+    override fun processFailedBlockTransactions(
         blockTransactions: Collection<TransactionEntity>,
         blockNumber: Long,
     ) {
@@ -32,9 +33,9 @@ class BlockProcessService(
         }
     }
 
-    fun addFailedBlock(blockNumber: Long) = blockProcessRepository.insertFailedBlock(blockNumber)
+    override fun addFailedBlock(blockNumber: Long) = blockProcessRepository.insertFailedBlock(blockNumber)
 
-    fun findLastProcessedBlock() = blockProcessRepository.findNProcessedBlocks().firstOrNull()
+    override fun findLastProcessedBlock() = blockProcessRepository.findNLastProcessedBlocks().firstOrNull()
 
-    fun findAllFailedBlock() = blockProcessRepository.findAllFailedBlock()
+    override fun findAllFailedBlock() = blockProcessRepository.findAllFailedBlock()
 }

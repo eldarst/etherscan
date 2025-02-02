@@ -5,11 +5,15 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jooq:
     sql-dialect: POSTGRES
+    code-gen: true
   liquibase:
     enabled: false
-#    change-log: classpath:db/changelog/db.changelog-master.yaml
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 etherscan:
   api:
     url: https://api.etherscan.io/api
     key: ${ETHERSCAN_API_KEY}
+
+scheduler:
+  shouldRunLatestFirst: ${SHOULD_PROCESS_LATEST_BLOCKS}

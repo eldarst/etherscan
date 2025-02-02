@@ -21,10 +21,16 @@ class BlockProcessRepository(private val configuration: Configuration) {
             .execute()
     }
 
-    fun findNLastProcessedBlocks(n: Long = 1): Collection<Long> {
+    fun findNProcessedBlocks(n: Long = 1, isAscending: Boolean = false): Collection<Long> {
         return configuration.dsl().select(PROCESSED_BLOCKS.BLOCK_NUMBER)
             .from(PROCESSED_BLOCKS)
-            .orderBy(PROCESSED_BLOCKS.BLOCK_NUMBER.desc())
+            .orderBy(
+                if (isAscending) {
+                    PROCESSED_BLOCKS.BLOCK_NUMBER.asc()
+                } else {
+                    PROCESSED_BLOCKS.BLOCK_NUMBER.desc()
+                }
+            )
             .limit(n)
             .fetch(PROCESSED_BLOCKS.BLOCK_NUMBER.notNull())
     }

@@ -34,7 +34,7 @@ class BlockProcessService(
 
     fun addFailedBlock(blockNumber: Long) = blockProcessRepository.insertFailedBlock(blockNumber)
 
-    fun findLastProcessedBlock() = blockProcessRepository.findNLastProcessedBlocks()
+    fun findLastProcessedBlock() = blockProcessRepository.findNProcessedBlocks().firstOrNull()
 
     fun findAllFailedBlock() = blockProcessRepository.findAllFailedBlock()
 }

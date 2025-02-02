@@ -13,7 +13,7 @@ class StatsService(
     private val blockProcessRepository: BlockProcessRepository,
 ) {
     fun getMaxBalanceChange(): BalanceChangeResult? {
-        val lastProcessedBlocks = blockProcessRepository.findNLastProcessedBlocks(100)
+        val lastProcessedBlocks = blockProcessRepository.findNProcessedBlocks(100)
         if (lastProcessedBlocks.isEmpty()) {
             logger.warn { "Doesn't have any saved blocks in the system" }
             return null

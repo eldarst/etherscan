@@ -22,7 +22,7 @@ repositories {
     mavenCentral()
 }
 
-val dbUrl: String = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5430/postgres_db"
+val dbUrl: String = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5432/postgres_db"
 val dbUser: String = System.getenv("POSTGRES_USER") ?: "postgres_user"
 val dbPassword: String = System.getenv("POSTGRES_PASSWORD") ?: "postgres_password"
 
@@ -135,11 +135,4 @@ tasks.withType<Test> {
 }
 tasks.named("generateJooq") {
     dependsOn("update")
-}
-
-tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
-    // Set environment variables to be available to your application at runtime
-    environment("DB_URL", "jdbc:postgresql://localhost:5430/postgres_db")
-    environment("POSTGRES_USER", "postgres_user")
-    environment("POSTGRES_PASSWORD", "postgres_password")
 }

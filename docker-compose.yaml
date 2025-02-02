@@ -51,7 +51,7 @@ services:
       POSTGRES_USER: "postgres_user"
       POSTGRES_PASSWORD: "postgres_password"
       ETHERSCAN_API_KEY: "YOUR_API_KEY"
-      SHOULD_PROCESS_LATEST_BLOCKS: true
+      SHOULD_PROCESS_LATEST_BLOCKS: false
 
     depends_on:
       - postgres

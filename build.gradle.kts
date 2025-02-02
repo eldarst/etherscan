@@ -122,7 +122,9 @@ jooq {
 
 ktlint {
     filter {
-        exclude("**/build/generated-src/jooq/**")
+        exclude { entry ->
+            entry.file.toString().contains("generated")
+        }
     }
 }
 

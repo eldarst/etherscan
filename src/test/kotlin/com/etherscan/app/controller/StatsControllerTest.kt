@@ -27,7 +27,7 @@ class StatsControllerTest(
     @Test
     @DatabaseTearDown(value = ["/db/controller/processed_blocks_no_transactions.xml"], type = DatabaseOperation.TRUNCATE_TABLE)
     @DatabaseSetup(value = ["/db/controller/processed_blocks_no_transactions.xml"], type = DatabaseOperation.CLEAN_INSERT)
-    fun `When return error when has processed blocks but no transactions`() {
+    fun `Should return error when has processed blocks but no transactions`() {
         val expectedError =
             ErrorResponse(
                 error = "Resource wasn't found",
@@ -54,7 +54,7 @@ class StatsControllerTest(
     }
 
     @Test
-    fun `When return error when no block were processed`() {
+    fun `Should return error when no block were processed`() {
         val expectedError =
             ErrorResponse(
                 error = "Resource wasn't found",

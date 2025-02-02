@@ -1,0 +1,4 @@
+# .ktlintignore
+
+# Ignore all jOOQ-generated Kotlin files
+build/generated-src/jooq/**/*.kt
